@@ -27,6 +27,12 @@ from data_validator import DrillingDataValidator
 from excel_forms_integration import FormsTabIntegration
 from region_cropping import crop_header, crop_activity, crop_metrics
 
+@st.cache_resource
+def get_engine():
+    cfg = OCRConfig()
+    engine = GPT5OCREngine(cfg)
+    return engine, cfg
+
 # Configure page
 st.set_page_config(
     page_title="GPT-5 Diamond Drilling OCR - Manual Review",
@@ -60,31 +66,15 @@ def setup_sidebar():
     
     st.sidebar.markdown("---")
     
-    # API Key Configuration
-    st.sidebar.subheader("🔑 OpenAI API Key")
-    
-    api_key_input = st.sidebar.text_input(
-        "Enter OpenAI API Key",
-        type="password",
-        value=st.session_state.config.openai_api_key,
-        help="Your OpenAI API key for GPT-5 access"
-    )
-    
-    if api_key_input and api_key_input != st.session_state.config.openai_api_key:
-        st.session_state.config.openai_api_key = api_key_input
-        os.environ['OPENAI_API_KEY'] = api_key_input
-        st.session_state.api_key_configured = True
-        st.sidebar.success("✅ API Key Updated!")
-    
-    # Model Configuration
-    st.sidebar.subheader("🤖 Model Settings")
-    model_choice = st.sidebar.selectbox(
-        "GPT Model",
-        ["gpt-5", "gpt-4o", "gpt-4o-mini", "gpt-4-turbo"],
-        index=1,
-        help="Choose the GPT model for OCR processing"
-    )
-    st.session_state.config.gpt_model = model_choice
+    # Model / API Configuration (Streamlit Cloud)
+    st.sidebar.subheader("🤖 Model / API")
+    st.sidebar.caption("Using Streamlit Cloud secrets: `OPENAI_API_KEY`, `OPENAI_MODEL`.")
+    # Optional read-only echo for clarity:
+    try:
+        model_in_use = st.secrets.get("OPENAI_MODEL", "gpt-4o")
+    except Exception:
+        model_in_use = "gpt-4o"
+    st.sidebar.text(f"Model: {model_in_use}")
 
     # Processing Parameters
     temperature = st.sidebar.slider(
@@ -187,7 +177,7 @@ def process_images(uploaded_files):
     
     # Initialize components
     preprocessor = SimpleImagePreprocessor()
-    ocr_engine = GPT5OCREngine(st.session_state.config)
+    ocr_engine, cfg = get_engine()
     validator = DrillingDataValidator()
     
     # Progress tracking
@@ -372,9 +362,8 @@ def manual_review_tab(excel_loaded):
                     st.write(f"**Current BHID:** {result['data'].get('bhid', 'N/A')}")
                 with col_norm2:
                     if st.button("🔧 Normalize BHID", key=f"normalize_bhid_{i}", help="Apply BHID canonicalization"):
-                        # Import the OCR engine to use its canonicalization
-                        from gpt5_ocr_engine import GPT5OCREngine
-                        engine = GPT5OCREngine(st.session_state.config)
+                        # Use cached engine for canonicalization
+                        engine, _ = get_engine()
                         original = result['data'].get('bhid', '')
                         normalized = engine._canonicalize_bhid(original)
                         if normalized and normalized != original:
