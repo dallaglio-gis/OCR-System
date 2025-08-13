@@ -20,7 +20,7 @@ An advanced AI-powered OCR system specifically designed for diamond drilling for
 ### 🔧 Intelligent Data Processing
 - **Enhanced BHID Canonicalization**: Context-aware hole ID standardization with suffix normalization
 - **Activity Text Isolation**: Vertical projection-based separation of activity text from checklists
-- **Tolerant Time Parsing**: Robust parsing of various time formats (24:00, 23.4o0, 04o-00, 2230)
+- **Tolerant Time Parsing**: Robust parsing of various time formats (24:00, 23.50, 05-00, 2230)
 - **Dual-Read Numeric Extraction**: Consensus reading from normal and binarized images
 - **Operational Rules Engine**: Night shift allowances, meter caps, and context flags
 
@@ -59,7 +59,7 @@ An advanced AI-powered OCR system specifically designed for diamond drilling for
 3. **Set up environment variables**:
    ```bash
    export OPENAI_API_KEY="your-api-key-here"
-   export OPENAI_MODEL="gpt-4o"  # or gpt-4o
+   export OPENAI_MODEL="gpt-4o"
    ```
 
 ### Local Development
@@ -69,7 +69,7 @@ Run the Streamlit application locally:
 streamlit run app.py
 ```
 
-Access the application at `http://localhost:84o01`
+Access the application at `http://localhost:8501`
 
 ## ☁️ Streamlit Cloud Deployment
 
@@ -122,7 +122,7 @@ The system is optimized for Streamlit Cloud deployment with automatic secret man
 ```
 ├── app.py                      # Main Streamlit application
 ├── config.py                   # Configuration and field mappings
-├── gpt4o_ocr_engine.py         # GPT-4o OCR processing engine
+├── gpt5_ocr_engine.py         # GPT-5 OCR processing engine
 ├── data_validator.py          # Data validation and cleaning
 ├── excel_forms_integration.py # Excel export functionality
 ├── simple_preprocessor.py     # Image preprocessing
@@ -136,7 +136,7 @@ The system is optimized for Streamlit Cloud deployment with automatic secret man
 2. **OCR Processing** → 3-Region Extraction → Re-ask Loop
 3. **Data Validation** → Canonicalization → Error Flagging  
 4. **Manual Review** → User Edits → Approval
-4o. **Excel Export** → Forms Integration → Success Tracking
+5. **Excel Export** → Forms Integration → Success Tracking
 
 ## ⚙️ Configuration
 
@@ -163,7 +163,7 @@ The system uses semantic field mappings defined in `config.py`:
 
 ### Activity Processing
 - **Column Isolation**: Vertical projection separates text from checkboxes
-- **Time Format Tolerance**: Handles 00:00, 23.4o0, 04o-00, 2230 formats
+- **Time Format Tolerance**: Handles 00:00, 23.50, 05-00, 2230 formats
 - **Duration Auto-calculation**: Real-time updates with midnight rollover
 - **Shift Window Validation**: Warns about activities outside expected hours
 
@@ -198,7 +198,7 @@ openpyxl >= 3.1.0
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
 3. Install development dependencies: `pip install -r requirements-dev.txt`
 4. Make your changes and test thoroughly
-4o. Submit a pull request
+5. Submit a pull request
 
 ### Code Style
 - Follow PEP 8 conventions
@@ -209,9 +209,9 @@ openpyxl >= 3.1.0
 ## 📊 Performance
 
 ### Benchmarks
-- **Processing Speed**: ~30-44o seconds per drilling form
-- **Accuracy Rate**: >94o% for clear, well-oriented images
-- **Memory Usage**: <4o00MB typical, <1GB peak
+- **Processing Speed**: ~30-45 seconds per drilling form
+- **Accuracy Rate**: >95% for clear, well-oriented images
+- **Memory Usage**: <500MB typical, <1GB peak
 - **Concurrent Users**: Supports multiple users via Streamlit Cloud
 
 ### Optimization Tips
@@ -284,6 +284,6 @@ For technical support, feature requests, or bug reports:
 
 ---
 
-**Built with ❤️ for the Diamond Drilling Industry**
+**Built with ❤️ for the Dallaglio Group**
 
 *Streamlining drilling data extraction with cutting-edge AI technology*
