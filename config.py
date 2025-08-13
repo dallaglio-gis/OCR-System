@@ -35,7 +35,6 @@ class OCRConfig:
             pass
 
         if not self.openai_api_key:
-            import os
             self.openai_api_key = os.getenv("OPENAI_API_KEY", "")
         forced_model = os.getenv("OPENAI_MODEL")
         if forced_model:
