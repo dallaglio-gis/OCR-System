@@ -26,9 +26,20 @@ class OCRConfig:
     confidence_threshold: float = 0.8
 
     def __post_init__(self):
-        # Load API key from environment if not provided
+        # Prefer Streamlit secrets, then env vars
+        try:
+            import streamlit as st
+            self.openai_api_key = st.secrets.get("OPENAI_API_KEY", "") or self.openai_api_key
+            self.gpt_model      = st.secrets.get("OPENAI_MODEL", self.gpt_model)
+        except Exception:
+            pass
+
         if not self.openai_api_key:
+            import os
             self.openai_api_key = os.getenv("OPENAI_API_KEY", "")
+        forced_model = os.getenv("OPENAI_MODEL")
+        if forced_model:
+            self.gpt_model = forced_model
 
 # ---------------------- Field mappings ----------------------
 # IMPORTANT:
