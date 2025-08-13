@@ -501,24 +501,21 @@ def manual_review_tab(excel_loaded):
                 
                 with col1:
                     if st.form_submit_button("✅ Approve for Export", type="primary"):
-                        # Update data and approve
-                        result['data'] = data
-                        result['status'] = 'approved'
-                        result['approved_at'] = pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')
-                        
                         # Re-validate with updated data
                         validator = DrillingDataValidator()
                         is_valid, validation_errors, cleaned_data = validator.validate_drilling_data(data)
-                        result['validation'] = {
-                            'is_valid': is_valid,
-                            'errors': validation_errors
-                        }
-                        result['data'] = cleaned_data
                         
-                        # Add to approved results
-                        if excel_loaded and st.session_state.approved_results:
-                            if result not in st.session_state.approved_results:
-                                st.session_state.approved_results.append(result)
+                        # Update the original result in session state
+                        for idx, orig_result in enumerate(st.session_state.processed_results):
+                            if orig_result['filename'] == result['filename']:
+                                st.session_state.processed_results[idx]['data'] = cleaned_data
+                                st.session_state.processed_results[idx]['status'] = 'approved'
+                                st.session_state.processed_results[idx]['approved_at'] = pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')
+                                st.session_state.processed_results[idx]['validation'] = {
+                                    'is_valid': is_valid,
+                                    'errors': validation_errors
+                                }
+                                break
                         
                         st.success(f"✅ {result['filename']} approved for Excel export!")
                         st.rerun()
